@@ -1,0 +1,22 @@
+import glob
+import os
+import ffmpeg
+from pydub import AudioSegment
+
+sound_path ="C:\\Users\\Mavi\\Desktop\\machineLearningProject\\wind_sounds\\"
+destination_path = "C:\\Users\\Mavi\\Desktop\\machineLearningProject\\data\\" 
+print(destination_path)
+files = glob.glob(sound_path + '*.wav')
+
+split_length = 15000
+for file in files:
+  newAudio = AudioSegment.from_file(file)
+  file_name = file.split('\\')[-1].split('.')[0]
+  new_file_nums = int(len(newAudio) / split_length) + 1
+  print(destination_path)
+  os.mkdir(destination_path + file_name)
+  current_index = 0
+  for i in range(new_file_nums):
+    sound_piece = newAudio[current_index:current_index + split_length]
+    sound_piece.export(destination_path+ file_name + "\\"+ file_name + '_'+ str(i) + '.wav',format="wav")
+    current_index += split_length

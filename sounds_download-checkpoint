@@ -1,0 +1,32 @@
+import youtube_dl
+from traitlets.traitlets import default
+import ffmpeg
+link_num = 23 # iterates over the links in the TXT file
+links_file = "links.txt" # File containing links to YouTube videos
+with open(links_file) as fp:
+   for link in fp:
+        print("\nStarting processing for link number ", link_num)
+        ydl_opts = {
+        "format": "bestaudio/best", 
+        "audio-format": "wav",
+        "outtmpl": "audio"+str(link_num)+".wav",        
+        "noplaylist" : True
+        
+        } # customizing the downloaded audio for our needs
+        
+        
+        # Step 1: Extract and download the audio
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+              dictMeta = ydl.extract_info(link.format(),download=False)
+              iMaxDuration = 51
+              # Duration < Max duation ?
+              iDuration = dictMeta["duration"]
+              print(iDuration)
+              ydl.download([link])
+              link_num=link_num+1     
+
+        except Exception as e:
+            #print(colored("Link number {} cannot be downloaded. Exception: {}".format(link_num, e), 'red'))
+            print("Video cannot be downloaded. Exception:/n{}".format(e))
+            continue # continue with the next link in the file

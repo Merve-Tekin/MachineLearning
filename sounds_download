@@ -1,0 +1,23 @@
+import youtube_dl
+from traitlets.traitlets import default
+link_num = 45 
+links_file = "links.txt" 
+with open(links_file) as fp:
+   for link in fp:
+        print("\nStarting processing for link number ", link_num)
+        ydl_opts = {
+        "format": "bestaudio/best", 
+        "audio-format": "wav",
+        "outtmpl": "audio"+str(link_num)+".wav",        
+        "noplaylist" : True 
+        }       
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+              dictMeta = ydl.extract_info(link.format(),download=False)
+
+              ydl.download([link])
+              link_num=link_num+1     
+
+        except Exception as e:
+            print("Video cannot be downloaded. Exception:/n{}".format(e))
+            continue 

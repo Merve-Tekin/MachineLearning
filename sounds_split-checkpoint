@@ -1,0 +1,34 @@
+import glob
+import os
+import ffmpeg
+from pydub import AudioSegment
+
+# eng: the wav file that will be splitted stays here
+# tr: parçalanacak olan wav ses dosyasının bulundugu dizin
+sound_path ="C:\\Users\\Mavi\\Desktop\\machineLearningProject\\bird_sounds\\"
+# eng: the pieces of the wav file will be stored in here
+# tr: wav dosyasının parçalara ayrılmış halinin saklandığı dizin
+destination_path = "C:\\Users\\Mavi\\Desktop\\machineLearningProject\\sounds_split\\" 
+print(destination_path)
+#  eng: gets a string list of the file names
+# tr: .wav uzantılı dosyalar string list haline getirilir
+files = glob.glob(sound_path + '*.wav')
+for file in files:
+  print("başla")
+  print(file)
+# eng: the split length of each piece of wav files (10000 ms = 10 s
+# tr: olusan wav dosyalarının uzunluğunun kaç mili saniye olacağını tutan degişken (100000 ms = 10 saniye)
+split_length = 30000
+
+# eng: iterate each .wav files in the folder
+# tr: dizinde bulunan tüm wav dosyalarını dolasan dongu
+for file in files:
+  newAudio = AudioSegment.from_file(file)
+  file_name = file.split('\\')[-1].split('.')[0]
+  new_file_nums = int(len(newAudio) / split_length) + 1
+  os.mkdir(destination_path + file_name)
+  current_index = 0
+  for i in range(new_file_nums):
+    sound_piece = newAudio[current_index:current_index + split_length]
+    sound_piece.export(destination_path+ file_name + "\\"+ file_name + '_'+ str(i) + '.wav',format="wav")
+    current_index += split_length
